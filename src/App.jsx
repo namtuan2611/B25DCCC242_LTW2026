@@ -6,33 +6,26 @@ const initialStudents = [
   { id: 2, name: 'Trần Thị B', score: 4.0, className: 'D20CQCN02' },
   { id: 3, name: 'Lê Văn C', score: 9.0, className: 'D20CQCN01' },
 ];
-
 const App = () => {
   const [students, setStudents] = useState(initialStudents);
   const [name, setName] = useState('');
   const [score, setScore] = useState('');
   const [className, setClassName] = useState('');
-  const [filter, setFilter] = useState('ALL'); // 'ALL', 'GIOI', 'TRUOT'
+  const [filter, setFilter] = useState('ALL');
   const [error, setError] = useState('');
 
-  // Xử lý thêm sinh viên mới
   const handleAddStudent = (e) => {
   e.preventDefault();
-
   if (!name.trim() || !score.toString().trim() || !className.trim()) {
     setError('Vui lòng nhập đầy đủ thông tin!');
     return;
   }
-
   const numScore = parseFloat(score);
   if (isNaN(numScore) || numScore < 0 || numScore > 10) {
     setError('Điểm số không hợp lệ! (phải từ 0 đến 10)');
     return;
   }
-
-  // Tự động tìm ID lớn nhất hiện tại rồi cộng thêm 1
   const newId = students.length > 0 ? Math.max(...students.map((s) => s.id)) + 1 : 1;
-
   const newStudent = {
     id: newId,
     name: name.trim(),
@@ -46,21 +39,15 @@ const App = () => {
   setClassName('');
   setError('');
 };
-
-  // Xử lý xóa sinh viên
   const handleDeleteStudent = (id) => {
     const updatedStudents = students.filter((student) => student.id !== id);
     setStudents(updatedStudents);
   };
-
-  // Lọc danh sách sinh viên theo bộ lọc
   const filteredStudents = students.filter((student) => {
     if (filter === 'GIOI') return student.score >= 8;
     if (filter === 'TRUOT') return student.score < 5;
     return true;
   });
-
-  // Thống kê cơ bản bằng phương thức reduce của ES6
   const totalStudents = students.length;
   const averageScore = totalStudents > 0 
     ? (students.reduce((acc, curr) => acc + curr.score, 0) / totalStudents).toFixed(2)
@@ -69,8 +56,6 @@ const App = () => {
   return (
     <div style={{ maxWidth: '800px', margin: '20px auto', fontFamily: 'Arial, sans-serif', padding: '0 20px' }}>
       <h2 style={{ textAlign: 'center' }}>Ứng dụng "Quản lý Điểm Sinh viên"</h2>
-
-      {/* Form thêm sinh viên */}
       <form onSubmit={handleAddStudent} style={{ background: '#f9f9f9', padding: '15px', borderRadius: '5px', marginBottom: '20px' }}>
         <h3>Thêm sinh viên mới</h3>
         {error && <p style={{ color: 'red', fontWeight: 'bold' }}>{error}</p>}
@@ -102,8 +87,6 @@ const App = () => {
           </button>
         </div>
       </form>
-
-      {/* Bộ lọc và Thống kê */}
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '10px' }}>
         <div>
   <span><strong>Bộ lọc: </strong></span>
@@ -117,8 +100,6 @@ const App = () => {
           </p>
         </div>
       </div>
-
-      {/* Bảng danh sách sinh viên */}
       <StudentTable students={filteredStudents} onDeleteStudent={handleDeleteStudent} />
     </div>
   );
